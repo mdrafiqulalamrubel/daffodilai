@@ -2,8 +2,8 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Install bash and other dependencies that might be needed by the build scripts
-RUN apk add --no-cache bash
+# Install bash and coreutils (for GNU timeout) needed by the build scripts
+RUN apk add --no-cache bash coreutils
 
 COPY package.json package-lock.json ./
 RUN npm ci
