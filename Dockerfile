@@ -11,6 +11,7 @@ RUN npm ci
 COPY . .
 
 # Build the project
+RUN chmod +x scripts/*.sh
 RUN npm run build
 
 # Expose ports that Wrangler/miniflare typically uses
