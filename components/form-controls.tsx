@@ -1,0 +1,8 @@
+'use client';
+import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+export function Picker({value,onChange,options,label,id,labels}:{value:string;onChange:(s:string)=>void;options:string[];label?:string;id?:string;labels?:Record<string,string>}){return <Select value={value||undefined} onValueChange={onChange}><SelectTrigger className="form-input" id={id} aria-label={label}><SelectValue placeholder={label||'Select'} /></SelectTrigger><SelectContent>{options.map(x=><SelectItem key={x} value={x}>{labels?.[x]||x}</SelectItem>)}</SelectContent></Select>;}
+export function Field({label,value,onChange,type='text',required=false,full=false,placeholder='',maxLength=200}:{label:string;value:string;onChange:(s:string)=>void;type?:string;required?:boolean;full?:boolean;placeholder?:string;maxLength?:number}){return <label className={'field'+(full?' full':'')}><span className="field-label">{label}{required?' *':''}</span>{type==='textarea'?<Textarea className="form-input" value={value||''} onChange={e=>onChange(e.target.value)} required={required} placeholder={placeholder} maxLength={maxLength}/>:<Input className="form-input" type={type} value={value||''} onChange={e=>onChange(e.target.value)} required={required} placeholder={placeholder} maxLength={maxLength}/>}</label>}
+export function Tick({checked,onChange,children}:{checked:boolean;onChange:(v:boolean)=>void;children:React.ReactNode}){return <label className="checkbox-label"><Checkbox checked={checked} onCheckedChange={v=>onChange(v===true)}/><span>{children}</span></label>;}

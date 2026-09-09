@@ -1,0 +1,1 @@
+import {Workspace} from '@/components/workspace';export const metadata={title:'Sample workspace',robots:{index:false,follow:false}};export default async function Page({searchParams}:{searchParams:Promise<{lang?:string}>}){const q=await searchParams;return <Workspace demo initialLang={q.lang==='bn'?'bn':'en'}/>;}

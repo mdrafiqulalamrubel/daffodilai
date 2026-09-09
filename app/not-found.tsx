@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="login-card"><h1>Page not found</h1><p className="mt-5">The page may have moved. Explore the Daffodil AI portfolio to continue.</p><a href="/" className="btn btn-primary">Return to Daffodil AI</a></main>;}

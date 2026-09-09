@@ -1,0 +1,2 @@
+import {requireChatGPTUser} from '@/app/chatgpt-auth';import {Workspace} from '@/components/workspace';export const dynamic='force-dynamic';export const metadata={title:'Team workspace',robots:{index:false,follow:false}};
+export default async function Page({searchParams}:{searchParams:Promise<{lang?:string}>}){const q=await searchParams;return <Protected lang={q.lang==='bn'?'bn':'en'}/>;}async function Protected({lang}:{lang:'en'|'bn'}){await requireChatGPTUser('/portal?lang='+lang);return <Workspace initialLang={lang}/>;}
