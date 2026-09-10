@@ -22,12 +22,22 @@ jobs:
               cd /home/${{ secrets.VPS_USERNAME }} || exit 1
               git clone https://github.com/mdrafiqulalamrubel/daffodilai.git || exit 1
             fi
-            
+
             # Navigate to the deployment directory
             cd /home/${{ secrets.VPS_USERNAME }}/daffodilai || exit 1
-            
-            # Pull the latest changes from GitHub
-            git pull origin main || exit 1
+
+            # Directory may exist without being a git repo (e.g. first manual copy). Repair in place
+            # without touching untracked data (./data, .env) rather than pulling into a non-repo.
+            if [ ! -d ".git" ]; then
+              echo "Directory exists but is not a git repository. Initializing in place..."
+              git init
+              git remote add origin https://github.com/mdrafiqulalamrubel/daffodilai.git
+            fi
+
+            # Fetch and hard-reset to origin/main (avoids merge conflicts on a deploy-only checkout;
+            # untracked files like ./data and .env are left alone).
+            git fetch origin main || exit 1
+            git reset --hard origin/main || exit 1
             
             # Check Docker and install if missing
             echo "Checking Docker installation..."
