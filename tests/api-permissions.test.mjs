@@ -1,18 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DatabaseSync} from 'node:sqlite';
-import {readFile, mkdtemp, rm} from 'node:fs/promises';
+import Database from 'better-sqlite3';
+import {readFile, mkdtemp, rm, readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {resolve, join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 
 // Exercise the actual route handlers and migration SQL without starting a server.
-// Only the platform identity headers, D1 adapter and object storage are substituted.
+// Only the DB adapter, object storage and signed-in identity are substituted.
 test('persistent intake, tenant boundaries, roles and external-delivery controls',async(t)=>{
  const root=resolve(import.meta.dirname,'..'),dir=await mkdtemp(join(tmpdir(),'dai-api-'));
- const sqlite=new DatabaseSync(':memory:');
- sqlite.exec(await readFile(join(root,'drizzle/0000_dashing_lorna_dane.sql'),'utf8'));
+ const sqlite=new Database(':memory:');
+ for(const file of (await readdir(join(root,'drizzle'))).filter(f=>f.endsWith('.sql')).sort())
+  sqlite.exec(await readFile(join(root,'drizzle',file),'utf8'));
  const make=(sql,args=[])=>({
   bind(...values){return make(sql,values)},
   async first(){return sqlite.prepare(sql).get(...args)||null},
@@ -20,19 +21,28 @@ test('persistent intake, tenant boundaries, roles and external-delivery controls
   async run(){const r=sqlite.prepare(sql).run(...args);return {success:true,meta:{changes:Number(r.changes)}}}
  });
  const objects=new Map();
- globalThis.__daiTestEnv={ADMIN_EMAILS:'owner@example.org',DB:{prepare:make,async batch(items){sqlite.exec('BEGIN');try{const results=[];for(const item of items)results.push(await item.run());sqlite.exec('COMMIT');return results}catch(e){sqlite.exec('ROLLBACK');throw e}}},BUCKET:{async put(key,bytes){objects.set(key,bytes)},async delete(key){objects.delete(key)},async get(key){const data=objects.get(key);return data?{body:data}:null}}};
- const as=(email=null)=>{globalThis.__daiTestHeaders=new Headers(email?{'oai-authenticated-user-email':email,'oai-authenticated-user-id':'user-'+email}:{});};
+ globalThis.__daiTestDb={prepare:make,async batch(items){sqlite.exec('BEGIN');try{const results=[];for(const item of items)results.push(await item.run());sqlite.exec('COMMIT');return results}catch(e){sqlite.exec('ROLLBACK');throw e}}};
+ globalThis.__daiTestStorage={async put(key,bytes){objects.set(key,bytes)},async delete(key){objects.delete(key)},async get(key){const data=objects.get(key);return data?{body:data}:null}};
+ process.env.SITE_URL='http://localhost:3000';
+ process.env.ADMIN_EMAILS='owner@example.org';
+ const as=(email=null)=>{globalThis.__daiTestUser=email?{id:'user-'+email,email,displayName:email}:null;};
  as();
  const routes={};
  for(const name of ['leads','workspace','records','members','tenants','files','mcp','integrations/odoo']){
   const output=join(dir,name.replaceAll('/','-')+'.mjs');
   await build({entryPoints:[join(root,'app/api',name,'route.ts')],outfile:output,bundle:true,format:'esm',platform:'node',target:'node24',logLevel:'silent',tsconfig:join(root,'tsconfig.json'),plugins:[{name:'platform-test-boundary',setup(b){
-   b.onResolve({filter:/^(cloudflare:workers|next\/headers|next\/navigation)$/},a=>({path:a.path,namespace:'platform-test'}));
-   b.onLoad({filter:/.*/,namespace:'platform-test'},a=>({contents:a.path==='cloudflare:workers'?'export const env=globalThis.__daiTestEnv':a.path==='next/headers'?'export async function headers(){return globalThis.__daiTestHeaders}':'export function redirect(url){throw new Error("Redirect: "+url)}',loader:'js'}));
+   b.onResolve({filter:/^(next\/headers|next\/navigation|@\/db|@\/lib\/auth|@\/lib\/storage)$/},a=>({path:a.path,namespace:'platform-test'}));
+   b.onLoad({filter:/.*/,namespace:'platform-test'},a=>({contents:{
+    '@/db':'export function getDb(){return globalThis.__daiTestDb}',
+    '@/lib/auth':'export async function getCurrentUser(){return globalThis.__daiTestUser||null}',
+    '@/lib/storage':'export function storage(){return globalThis.__daiTestStorage}',
+    'next/headers':'export async function headers(){return globalThis.__daiTestHeaders||new Headers()}',
+    'next/navigation':'export function redirect(url){throw new Error("Redirect: "+url)}',
+   }[a.path],loader:'js'}));
   }}]});
   routes[name]=await import(pathToFileURL(output));
  }
- const request=(path,method='GET',body,origin='https://daffodil-ai-ecosystem.saburkhan.chatgpt.site')=>new Request('https://daffodil-ai-ecosystem.saburkhan.chatgpt.site/api/'+path,{method,headers:{origin,'content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+ const request=(path,method='GET',body,origin='http://localhost:3000')=>new Request('http://localhost:3000/api/'+path,{method,headers:{origin,'content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
  const invoke=async(name,method='GET',body,path=name,origin)=>{const r=await routes[name][method](request(path,method,body,origin));return {status:r.status,data:await r.json()}};
  const enquiry={name:'Test Visitor',organization:'Example Institution',email:'visitor@example.org',sector:'Academia',product:'AI Professor',intent:'Book a demo',requirements:'An institutional demonstration',consent:true,requestKey:crypto.randomUUID()};
  let lead,secondTenant,record;
@@ -99,5 +109,5 @@ test('persistent intake, tenant boundaries, roles and external-delivery controls
    const catalogue=await invoke('mcp','POST',{jsonrpc:'2.0',id:2,method:'tools/call',params:{name:'list_products'}});assert.equal(JSON.parse(catalogue.data.result.content[0].text).length,4);assert.ok(!JSON.stringify(catalogue.data).includes('visitor@example.org'));
    assert.equal((await invoke('mcp','POST',null)).data.error.code,-32600);
   });
- }finally{sqlite.close();await rm(dir,{recursive:true,force:true});delete globalThis.__daiTestEnv;delete globalThis.__daiTestHeaders;}
+ }finally{sqlite.close();await rm(dir,{recursive:true,force:true});delete globalThis.__daiTestDb;delete globalThis.__daiTestStorage;delete globalThis.__daiTestUser;delete globalThis.__daiTestHeaders;delete process.env.ADMIN_EMAILS;delete process.env.SITE_URL;}
 });

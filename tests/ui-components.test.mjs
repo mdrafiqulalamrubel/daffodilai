@@ -1,24 +1,41 @@
 import assert from "node:assert/strict";
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, mkdtemp, rm } from "node:fs/promises";
 import path from "node:path";
-import test, { after } from "node:test";
-import { fileURLToPath } from "node:url";
+import test from "node:test";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createServer } from "vite";
+import { build } from "esbuild";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const vite = await createServer({
-  appType: "custom",
-  configFile: false,
-  root,
-  resolve: { alias: { "@": root } },
-  server: { middlewareMode: true },
-});
+// Created under node_modules (not the OS tmpdir) so Node's bare-specifier
+// resolution for the externalized "react"/"react-dom" imports below can walk
+// up and find this project's node_modules/react.
+const dir = await mkdtemp(path.join(root, "node_modules", ".dai-ui-"));
 
-after(async () => {
-  await vite.close();
+async function loadComponent(entry) {
+  // CJS output (not ESM): some deps (e.g. lucide-react) ship a CJS build
+  // that calls require("react") internally, which only resolves when the
+  // bundle itself runs under CommonJS (real `require` available at runtime).
+  const output = path.join(dir, path.basename(entry).replace(/\.tsx?$/, "") + ".cjs");
+  await build({
+    entryPoints: [path.join(root, entry)],
+    outfile: output,
+    bundle: true,
+    format: "cjs",
+    platform: "node",
+    target: "node24",
+    jsx: "automatic",
+    logLevel: "silent",
+    tsconfig: path.join(root, "tsconfig.json"),
+    external: ["react", "react-dom", "react-dom/server"],
+  });
+  return import(pathToFileURL(output).href);
+}
+
+test.after(async () => {
+  await rm(dir, { recursive: true, force: true });
 });
 
 async function readCssTree(directory) {
@@ -36,12 +53,10 @@ async function readCssTree(directory) {
 }
 
 test("emits the catalog's animation and scrolling utilities", async () => {
-  const css = await readCssTree(path.join(root, "dist"));
+  const css = await readCssTree(path.join(root, ".next", "static"));
 
   assert.match(css, /--tw-enter-opacity/);
-  assert.match(css, /scrollbar-width:\s*thin/);
-  assert.match(css, /scrollbar-width:\s*none/);
-  assert.match(css, /scrollbar-gutter:\s*stable/);
+  assert.match(css, /scroll-fade-x/);
   assert.match(css, /scroll-fade-reveal-b/);
   assert.match(css, /mask-image:/);
   assert.match(css, /tw-shimmer/);
@@ -49,7 +64,7 @@ test("emits the catalog's animation and scrolling utilities", async () => {
 });
 
 test("forwards progress semantics to the primitive", async () => {
-  const { Progress } = await vite.ssrLoadModule("/components/ui/progress.tsx");
+  const { Progress } = await loadComponent("components/ui/progress.tsx");
   const html = renderToStaticMarkup(React.createElement(Progress, { value: 37 }));
 
   assert.match(html, /aria-valuenow="37"/);
@@ -58,7 +73,7 @@ test("forwards progress semantics to the primitive", async () => {
 });
 
 test("emits chart themes for the starter's media dark mode", async () => {
-  const { ChartStyle } = await vite.ssrLoadModule("/components/ui/chart.tsx");
+  const { ChartStyle } = await loadComponent("components/ui/chart.tsx");
   const html = renderToStaticMarkup(
     React.createElement(ChartStyle, {
       id: "contract",
@@ -74,9 +89,7 @@ test("emits chart themes for the starter's media dark mode", async () => {
 });
 
 test("renders sidebar skeletons deterministically", async () => {
-  const { SidebarMenuSkeleton } = await vite.ssrLoadModule(
-    "/components/ui/sidebar.tsx",
-  );
+  const { SidebarMenuSkeleton } = await loadComponent("components/ui/sidebar.tsx");
   const first = renderToStaticMarkup(React.createElement(SidebarMenuSkeleton));
   const second = renderToStaticMarkup(React.createElement(SidebarMenuSkeleton));
 

@@ -1,0 +1,39 @@
+Source: https://eduvas.com
+Product: Eduvas
+
+# Eduvas Product Overview
+
+## Core Platform Description
+Eduvas is an AI-driven, integrated education platform built to automate and manage the complete operations of universities, schools, professional institutes, and e-learning organizations worldwide. The system supports institutions ranging from single classrooms to large multi-campus global education groups.
+
+## Target Audience
+Universities. Schools and colleges. Professional training institutes. E-learning organizations. Education groups.
+
+## Key Performance Metrics
+200K+ students managed. 100+ modules available. 54+ legacy systems integrated. 26+ years of education development experience. 40+ real-world educational organizations actively deployed. 98.4% efficiency lift reported. 40% efficiency gain in a verified case study.
+
+## Product Verticals
+Eduvas University - Enterprise Higher Ed ERP. Eduvas School - Modern K-12 Management. Eduvas Institute - Skills & Training Core.
+
+## Core Modules and Features
+
+### Student Lifecycle Management
+Admission to graduation tracking. CRM and smart admissions portals. Career services and alumni management.
+
+### Academic Operations
+Curriculum planning with dynamic course mapping. Integrated academics and learning management system. Auto attendance tracking. Result operations management.
+
+### Institutional Management
+Finance and accounting integration. Hostel management. HR operations. Inventory management. Research management. Examination management.
+
+### System Capabilities
+Real-time progress tracking and feedback. AI-enabled analytics. Data-driven institutional decision-making. Multi-campus support.
+
+## Integration Ecosystem
+Connected systems include Koha (library management), Moodle LMS, Blackboard, DSpace Repository, Open Journal Systems (OJS), Turnitin (academic integrity), Zoom, Google Workspace, QuickBooks, Odoo ERP, 1 Card System (smart campus cards), and AI Professor (teaching assistant).
+
+## Unique Selling Points
+Education-focused specialization rather than a generic ERP approach. Precision-engineered for specific educational requirements. Unified data integration eliminating information silos. Zero-downtime migration capabilities. Data sovereignty compliance. Governance-ready for public institutions.
+
+## Implementation Services
+Strategic ecosystem audit. Sovereign roadmap development. Zero-downtime migration. Customized implementation. Data migration services. Managed system services.

@@ -1,0 +1,61 @@
+Source: https://perfecthr.net/
+Product: Perfect HR
+
+# Perfect HR Product Overview
+
+## Core Value Proposition
+Perfect HR is described as "AI-Driven Modern HR Solution" that consolidates workforce management, payroll, recruitment, and analytics in one intelligent platform.
+
+## Target Audience
+Growing businesses with 1-300+ employees. Organizations across various sectors including corporate, education, healthcare, manufacturing, consulting, and financial services.
+
+## Primary Modules & Features
+
+### Employee Management
+Comprehensive employee profiles (personal, health, license records). Branch and inter-company transfers. Resignation and exit clearance workflows. Performance appraisals with OKRs and 9-box talent grids. Multi-company and multi-branch support.
+
+### Recruitment & ATS
+AI-powered CV screening and candidate ranking. Job positions and application pipelines. Structured interview stages and evaluations. Offer letters and onboarding processes. Talent pools for future opportunities.
+
+### Attendance & Leaves
+Biometric and access-device integration. Employee-device mapping with punch logs. Flexible work shifts and punch-time schedules. Configurable leave approval workflows. Sandwich-day rules and notice-period validation. Leave balance carryover with expiry rules.
+
+### Payroll & Accounts
+Payslips and batch payroll runs. Flexible salary structures and rules. Worked-day calculations and contribution registers. Automated journal entries to accounting. Employee loan requests with installment schedules. Salary advance request tracking.
+
+### Employee Assets, Applications & Documents
+Asset management with allocation and return tracking. Salary, employment, and experience certificates. NOC, ID card, and access card requests. Multi-step approval workflows with recorded reasons. Organized document folders with version control. Document distribution and expiry alerts.
+
+### Task & Project Management
+Project stages and Kanban task boards. Task assignment, deadlines, and priorities. Timesheets linked to tasks. Billable time tracking and project profitability. Goal alignment through appraisal OKRs.
+
+### CRM, Sales & Expenses
+Lead pipelines with AI-powered lead intelligence. CRM analytics and visualization. Target-versus-achievement tracking. Incentive calculations based on performance. Expense claims, approvals, and reimbursements.
+
+### Analytics & Reporting
+Central HR dashboard workspace. Headcount, leave, and attendance insights. AI-powered business intelligence across HR data. Predictive and prescriptive financial analytics. Actionable AI insights embedded in workflows.
+
+## AI-Powered Capabilities
+The platform includes seven distinct AI features:
+1. AI Recruitment - CV screening, candidate ranking, and consistent shortlisting support.
+2. Attrition Prediction - Identifies retention risks through workforce patterns and engagement signals.
+3. Performance Intelligence - Continuous AI-powered insights and coaching recommendations.
+4. L&D Personalization - Tailored learning paths based on role, skills, and career goals.
+5. AI HR Chatbot - 24/7 responses to common HR questions about leaves, policies, and payslips.
+6. Workforce Forecasting - Projects headcount, skill gaps, and budget needs.
+7. Video Interview Analysis - AI-generated transcripts and signals for speaking clarity, pace, sentiment, and engagement.
+
+## Implementation & Setup
+Described as "Up and Running in Hours." Four-step process: sign up, configure workspace, onboard team, manage and analyze. No-code configuration tools available. CSV import capability for employee data.
+
+## Pricing Model
+Three subscription tiers based on employee count: Essential (1-120 employees) at 10,000 BDT/month. Professional (121-300 employees) at 18,000 BDT/month. Enterprise (300+ employees) at 20,000 BDT/month. Additional offerings include a 3-day free trial (no credit card required), a 30-day money-back guarantee, volume discounts, pay-per-active-employee model, and monthly billing adjustments as teams grow.
+
+## Security & Compliance
+Role-based access control. AES-256 encryption at rest and TLS 1.3 in transit. GDPR compliant. Automated backups and recovery. Audit trails with timestamps and user details. SOC 2 Type II certification mentioned.
+
+## Integration Capabilities
+Native integrations with QuickBooks, Xero, Salesforce, Slack, Google Workspace, and Microsoft Teams. API and Zapier support for 50+ additional tools.
+
+## Unique Selling Points
+AI built into the core platform rather than as an add-on. Unified platform reduces tool fragmentation. Support for growing businesses from startup to enterprise scale. Industry-specific solutions for corporate, education, healthcare, manufacturing, consulting, and BFSI sectors. No lengthy implementation process compared to traditional on-premise solutions.

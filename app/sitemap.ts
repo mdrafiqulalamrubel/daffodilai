@@ -1,2 +1,3 @@
 import {products,insights,routeTitles} from '@/lib/catalog';
-export default function sitemap(){const origin='https://daffodil-ai-ecosystem.saburkhan.chatgpt.site';return [...Object.keys(routeTitles).filter(x=>x!=='/login'),...products.map(p=>'/solutions/'+p.id),...insights.map(a=>'/insights/'+a.id)].flatMap(path=>[{url:origin+path,alternates:{languages:{en:origin+path,bn:origin+path+'?lang=bn'}}},{url:origin+path+'?lang=bn',alternates:{languages:{en:origin+path,bn:origin+path+'?lang=bn'}}}]);}
+import {SITE_URL} from '@/lib/site';
+export default function sitemap(){const origin=SITE_URL;return [...Object.keys(routeTitles).filter(x=>x!=='/login'),...products.map(p=>'/solutions/'+p.id),...insights.map(a=>'/insights/'+a.id)].flatMap(path=>[{url:origin+path,alternates:{languages:{en:origin+path,bn:origin+path+'?lang=bn'}}},{url:origin+path+'?lang=bn',alternates:{languages:{en:origin+path,bn:origin+path+'?lang=bn'}}}]);}

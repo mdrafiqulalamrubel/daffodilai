@@ -1,12 +1,12 @@
-import {env} from 'cloudflare:workers';
-import {headers} from 'next/headers';
-import {getChatGPTUser} from '@/app/chatgpt-auth';
-export const SITE_URL='https://daffodil-ai-ecosystem.saburkhan.chatgpt.site';
-export const runtime=()=>env as unknown as Record<string,any>;
-export function db(){const d=runtime().DB;if(!d)throw new Error('Storage is temporarily unavailable');return d;}
+import {getDb} from '@/db';
+import {getCurrentUser} from '@/lib/auth';
+import {SITE_URL} from '@/lib/site';
+export {SITE_URL};
+export const runtime=()=>process.env as unknown as Record<string,any>;
+export function db(){return getDb();}
 export const now=()=>new Date().toISOString();
 export const uid=()=>crypto.randomUUID();
-export async function identity(){const u=await getChatGPTUser();const h=await headers();const id=h.get('oai-authenticated-user-id');return u&&id?{...u,id,email:u.email.toLowerCase()}:null;}
+export async function identity(){const u=await getCurrentUser();return u?{id:u.id,email:u.email.toLowerCase(),displayName:u.displayName}:null;}
 export function isAdmin(email:string){return String(runtime().ADMIN_EMAILS||'').toLowerCase().split(',').map(s=>s.trim()).filter(Boolean).includes(email.toLowerCase());}
 export async function ensureRoot(){await db().prepare("INSERT INTO tenants (id,name,locale,brand,created_at) VALUES ('daffodil','Daffodil AI','en','Daffodil AI',?) ON CONFLICT(id) DO NOTHING").bind(now()).run();}
 export async function bootstrap(user:NonNullable<Awaited<ReturnType<typeof identity>>>){if(!isAdmin(user.email))return;await ensureRoot();await db().prepare("INSERT INTO memberships (id,tenant_id,email,user_id,role,created_at) VALUES (?,'daffodil',?,?,'Owner',?) ON CONFLICT(tenant_id,email) DO NOTHING").bind(uid(),user.email,user.id,now()).run();}

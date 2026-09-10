@@ -2,7 +2,20 @@ services:
   web:
     build: .
     ports:
-      - "8787:8787"
+      - "3000:3000"
     restart: unless-stopped
+    environment:
+      - DATABASE_PATH=/app/data/app.db
+      - UPLOADS_DIR=/app/data/uploads
+      - SITE_URL=${SITE_URL:-http://localhost:3000}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - ADMIN_EMAILS=${ADMIN_EMAILS}
+      - ODOO_URL=${ODOO_URL}
+      - ODOO_DB=${ODOO_DB}
+      - ODOO_UID=${ODOO_UID}
+      - ODOO_API_KEY=${ODOO_API_KEY}
+      - ODOO_COMPANY_ID=${ODOO_COMPANY_ID}
+      - OCR_GATEWAY_URL=${OCR_GATEWAY_URL}
+      - OCR_GATEWAY_TOKEN=${OCR_GATEWAY_TOKEN}
     volumes:
-      - ./.wrangler:/app/.wrangler
+      - ./data:/app/data
