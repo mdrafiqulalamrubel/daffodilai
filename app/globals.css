@@ -70,7 +70,7 @@
 .inline-year{display:inline!important;font-size:12px!important;letter-spacing:1px!important;margin-left:4px!important}.page-intro{padding:60px 0 54px;background:var(--blue-50);border-bottom:1px solid #dbe0e6}
 .page-intro.solutions-hero,.page-intro.about-hero,.page-intro.services-hero,.page-intro.ecosystem-hero{position:relative;overflow:hidden;padding:110px 0 74px;background:var(--blue-900);border-bottom:none;color:#fff}
 .page-intro.solutions-hero::before{content:'';position:absolute;inset:0;background:url(/images/solutions-hero.png) center/cover no-repeat}
-.page-intro.about-hero::before{content:'';position:absolute;inset:0;background:url(/images/About-us-page-image.png) center/cover no-repeat}
+.page-intro.about-hero::before{content:'';position:absolute;inset:0;background:url(/images/about-us-slide.png) center/cover no-repeat}
 .page-intro.services-hero::before{content:'';position:absolute;inset:0;background:url(/images/services.png) center/cover no-repeat}
 .page-intro.ecosystem-hero::before{content:'';position:absolute;inset:0;background:url(/images/Our-Ecosystem.png) center/cover no-repeat}
 .page-intro.solutions-hero::after,.page-intro.about-hero::after,.page-intro.services-hero::after,.page-intro.ecosystem-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,rgba(0,59,122,.93) 0%,rgba(0,84,166,.78) 45%,rgba(0,87,184,.5) 100%)}
